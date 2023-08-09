@@ -1,12 +1,3 @@
-// Imports
-import { addEvents, handleSearch } from './src/utils';
-import { createOrderItem } from './src/components/createOrderItem.js';
-import { getTicketCategories } from './src/components/api/getTicketCategories.js';
-import { removeLoader, addLoader } from './src/components/loader';
-import './src/mocks/handlers';
-
-let events = null;
-
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -15,92 +6,22 @@ function navigateTo(url) {
 // HTML templates
 function getHomePageTemplate() {
   return `
-   <div id="content" class="hidden">
-      <img src="./src/assets/Endava.png" alt="summer">
-      <div class="flex flex-col items-center">
-        <div class="w-80">
-          <h1>Explore Events</h1>
-          <div class="filters flex flex-col">
-            <input type="text" id="filter-name" placeholder="Filter by name" class="px-4 mt-4 mb-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-            <button id="filter-button" class="px-4 py-2 text-white filter-btn rounded-lg">Filter</button>
-          </div>
-        </div>
+  
+    <div id="content">
+    
+      <div class="events flex items-center justify-center flex-wrap ">
       </div>
-      <div class="events flex items-center justify-center flex-wrap">
-      </div>
-      <div class="cart"></div>
     </div>
+  
   `;
 }
 
 function getOrdersPageTemplate() {
   return `
-      <div id="content" class="hidden">
-        <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
-        <div class="purchases ml-6 mr-6">
-          <div class="bg-white px-4 py-3 gap-x-4 flex font-bold">
-            <span class="flex-1">Name</span>
-            <span class="flex-1 flex justify-end">Nr tickets</span>
-            <span class="flex-1">Category</span>
-            <span class="flex-1 hidden md:flex">Date</span>
-            <span class="w-12 text-center hidden md:flex">Price</span>
-            <span class="w-28 sm:w-8"></span>
-          </div>
-        </div>
-      </div>
+    <div id="content">
+    <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+    </div>
   `;
-}
-
-function liveSearch() {
-  const filterInput = document.querySelector('#filter-name');
-
-  if(filterInput) {
-    const searchValue = filterInput.value;
-    
-    if(searchValue) {
-      const filteredEvents = events.filter(event => event.name.toLowerCase().includes(searchValue.toLowerCase()));
-    
-      addEvents(filteredEvents);
-    }
-  }
-
-}
-
-function setupFilterEvents() {
-  const nameFilterInput = document.querySelector('#filter-name');
-
-  if(nameFilterInput) {
-    const filterInterval = 500;
-
-    nameFilterInput.addEventListener('keyup', () => {
-      setTimeout(liveSearch, filterInterval);
-    });
-  }
-}
-
-function setupSearchEvents() {
-  const searchForm = document.querySelector('.search-form');
-  const searchInput = document.querySelector('.search-input');
-  const searchButton = document.querySelector('.search-button');
-  const eventSection = document.querySelector('.events');
-
-  
-  if(searchForm) {
-    searchForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const searchTerm = searchInput.value.trim().toLowerCase();
-      const resultsFound = await handleSearch(searchTerm);
-      if (!resultsFound) {
-        eventSection.innerHTML = 'No results found';
-      }
-    });
-  }
-
-  if(searchButton) {
-    searchButton.addEventListener('click', () => {
-      searchInput.classList.toggle('active');
-    });
-  }
 }
 
 function setupNavigationEvents() {
@@ -137,59 +58,124 @@ function setupInitialPage() {
   renderContent(initialUrl);
 }
 
-async function fetchTicketEvents() {
-  const response = await fetch('/api/ticketEvents');
-  const data = await response.json();
-  return data;
-}
-
-async function fetchOrders() {
-  const response = await fetch('/api/orders');
-  const orders = await response.json();
-  return orders;
-}
-
 function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
 
-  setupFilterEvents();
-  setupSearchEvents();
-  addLoader();
+  
+  // Sample hardcoded event data
+  const eventData = {
+    id: 1,
+    description: 'Sample event description.',
+    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
+    name: 'Sample Event',
+    ticketCategories: [
+      { id: 1, description: 'General Admission' },
+      { id: 2, description: 'VIP' },
+    ],
 
-  fetchTicketEvents()
-    .then((data) => {
-      events = data;
-      setTimeout(() => {
-        removeLoader();
-      }, 200);
-      addEvents(events);
+    
+  };
+
+  
+  
+  // Create the event card element
+  const eventCard = document.createElement('div');
+  eventCard.classList.add('event-card'); 
+  // Create the event content markup
+  const contentMarkup = `
+    <header>
+      <h2 class="event-title text-2xl font-bold">${eventData.name}</h2>
+    </header>
+    <div class="content">
+      < alt="${eventData.name}" class="event-image w-full height-200 rounded object-cover mb-4">
+      <p class="description text-gray-700">${eventData.description}</p>
+    </div>
+  `;
+
+  eventCard.innerHTML = contentMarkup;
+  const eventsContainer = document.querySelector('.events');
+  // Append the event card to the events container
+  eventsContainer.appendChild(eventCard);
+
+  console.log('function',fetchTicketEvents());
+    fetchTicketEvents().then((data)=>{
+      addEvents(data);
     });
+
+  
 }
+
+async function fetchTicketEvents()
+{
+  const response= await fetch('http://localhost:9090/getAll');
+  const data= await response.json();
+  return data;
+}
+
+const addEvents=(events) =>{
+  const eventsDiv=document.querySelector('.events');
+  eventsDiv.innerHTML='No invents';
+  if(events.length)
+  {
+    eventsDiv.innerHTML=''; 
+    events.forEach(event=>{
+      eventsDiv.appendChild(createEvent(event));
+    });
+  }
+};
+
+
+
+
+const createEventElement = (eventData) => {
+  const imgMap = {
+    1: './src/assets/untold.png',
+    2: './src/assets/electic_castle.png',
+    3: './src/assets/football_festival.png',
+    4: './src/assets/wine_festival.png'
+  };
+  const { id, name, description } = eventData;
+  console.log(eventData);
+  const eventDiv = document.createElement('div');
+
+  eventDiv.classList.add('event-card'); // Add the event-card class
+
+  const contentMarkup = `
+  <header>
+    <h2 class="event-title text-2xl font-bold">${name}
+    <p class="description text-gray-700">${description}</p></h2>
+  </header>
+  <div class="content">
+    <img src="${imgMap[id]}" alt="${name}" class="event-image custom-image-size rounded object-cover mb-4">
+  
+    <div class="quantity">
+      <label for="ticketQuantity">Select quantity:</label>
+      <select id="ticketQuantity" name="ticketQuantity">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <!-- Adăugați mai multe opțiuni, dacă este necesar -->
+      </select>
+      <button class="add-to-cart-btn">Add to Cart</button>
+    </div>
+  </div>
+`;
+  eventDiv.innerHTML = contentMarkup;
+  return eventDiv;
+};
+
+export const createEvent = (eventData) => {
+  const eventElement = createEventElement(eventData);
+  return eventElement;
+};
+
+
+
 
 function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
-
-  const purchasesDiv = document.querySelector('.purchases');
-  addLoader();
-
-  if (purchasesDiv) {
-    fetchOrders()
-      .then((orders) => {
-        if (orders.length > 0) {
-          setTimeout(() => {
-            removeLoader();
-          }, 200);
-          orders.forEach((order) => {
-            const newOrder = createOrderItem(categories, order);
-            purchasesDiv.appendChild(newOrder);
-          });
-        } else {
-          removeLoader();
-        }
-      });
-  }
 }
 
 // Render content based on URL
@@ -200,20 +186,29 @@ function renderContent(url) {
   if (url === '/') {
     renderHomePage();
   } else if (url === '/orders') {
-    getTicketCategories()
-      .then((categories) => {
-        renderOrdersPage(categories);
-      })
-      .catch((error) => {
-        console.error('Error fetching ticket categories:', error);
-      });
+    renderOrdersPage()
   }
 }
 
+const header = document.querySelector('.top-header');
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+// Ascunde antetul când derulați în jos
+let prevScrollPos = window.pageYOffset;
+window.addEventListener('scroll', () => {
+  const currentScrollPos = window.pageYOffset;
+  if (prevScrollPos > currentScrollPos) {
+    header.classList.remove('top-header-hidden');
+  } else {
+    header.classList.add('top-header-hidden');
+    // Închide meniul mobil dacă este deschis
+    mobileMenuBtn.classList.remove('open');
+    mobileMenu.classList.add('hidden');
+  }
+  prevScrollPos = currentScrollPos;
+});
 
 // Call the setup functions
-setupFilterEvents();
-setupSearchEvents();
 setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
