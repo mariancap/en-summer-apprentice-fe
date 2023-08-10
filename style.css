@@ -144,15 +144,11 @@ h1 {
   z-index: 2;
 }
 
-
-
-
-/* Restul stilurilor existente */
-
-/* Stilurile pentru antet */
 .top-header {
   background-color: #ffea83;
   position: sticky;
   top: 0;
   z-index: 1000; /* Asigurăm că antetul este peste conținut */
 }
+
+

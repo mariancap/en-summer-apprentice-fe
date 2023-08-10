@@ -1,3 +1,7 @@
+import {useStyle} from './styles'
+
+import {createEvent} from './createEventOrder.js';
+
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -63,7 +67,7 @@ function renderHomePage() {
   mainContentDiv.innerHTML = getHomePageTemplate();
 
   
-  // Sample hardcoded event data
+
   const eventData = {
     id: 1,
     description: 'Sample event description.',
@@ -113,6 +117,14 @@ async function fetchTicketEvents()
   return data;
 }
 
+
+async function fetchOders()
+{
+  const response= await fetch('http://localhost:9090/orders');
+  const data= await response.json();
+  return data;
+}
+
 const addEvents=(events) =>{
   const eventsDiv=document.querySelector('.events');
   eventsDiv.innerHTML='No invents';
@@ -128,54 +140,13 @@ const addEvents=(events) =>{
 
 
 
-const createEventElement = (eventData) => {
-  const imgMap = {
-    1: './src/assets/untold.png',
-    2: './src/assets/electic_castle.png',
-    3: './src/assets/football_festival.png',
-    4: './src/assets/wine_festival.png'
-  };
-  const { id, name, description } = eventData;
-  console.log(eventData);
-  const eventDiv = document.createElement('div');
-
-  eventDiv.classList.add('event-card'); // Add the event-card class
-
-  const contentMarkup = `
-  <header>
-    <h2 class="event-title text-2xl font-bold">${name}
-    <p class="description text-gray-700">${description}</p></h2>
-  </header>
-  <div class="content">
-    <img src="${imgMap[id]}" alt="${name}" class="event-image custom-image-size rounded object-cover mb-4">
-  
-    <div class="quantity">
-      <label for="ticketQuantity">Select quantity:</label>
-      <select id="ticketQuantity" name="ticketQuantity">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <!-- Adăugați mai multe opțiuni, dacă este necesar -->
-      </select>
-      <button class="add-to-cart-btn">Add to Cart</button>
-    </div>
-  </div>
-`;
-  eventDiv.innerHTML = contentMarkup;
-  return eventDiv;
-};
-
-export const createEvent = (eventData) => {
-  const eventElement = createEventElement(eventData);
-  return eventElement;
-};
-
-
 
 
 function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
+
+  
 }
 
 // Render content based on URL
@@ -190,23 +161,9 @@ function renderContent(url) {
   }
 }
 
-const header = document.querySelector('.top-header');
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 
-// Ascunde antetul când derulați în jos
-let prevScrollPos = window.pageYOffset;
-window.addEventListener('scroll', () => {
-  const currentScrollPos = window.pageYOffset;
-  if (prevScrollPos > currentScrollPos) {
-    header.classList.remove('top-header-hidden');
-  } else {
-    header.classList.add('top-header-hidden');
-    // Închide meniul mobil dacă este deschis
-    mobileMenuBtn.classList.remove('open');
-    mobileMenu.classList.add('hidden');
-  }
-  prevScrollPos = currentScrollPos;
-});
+
+
 
 // Call the setup functions
 setupNavigationEvents();
