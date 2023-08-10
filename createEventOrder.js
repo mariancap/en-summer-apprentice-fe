@@ -108,10 +108,10 @@ const createEventElement = (eventData) => {
     })
     .then((data) => {
       input.value = 0;
-      console.log('order sent to backend');
+      console.log('Post done with succes!');
     })
     .catch((error) => {
-      console.error('error saving purchased event:', error);
+      console.error('error in post method:', error);
     })
   }
 
