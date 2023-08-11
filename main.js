@@ -1,6 +1,7 @@
-import {useStyle} from './styles'
 
-import {createEvent} from './createEventOrder.js';
+import {addLoader,removeLoader} from './src/components/loader';
+import { createEvent } from './src/components/createEventOrder.js';
+import { createOrderElement } from './src/components/createOrderItem.js';
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -24,6 +25,9 @@ function getOrdersPageTemplate() {
   return `
     <div id="content">
     <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+    <div class="purchases ml-6 mr-6">
+        <div class="bg-white px-4 py-3 gap-x-4 flex font-bold></div>
+      </div>  
     </div>
   `;
 }
@@ -104,6 +108,10 @@ function renderHomePage() {
 
   console.log('function',fetchTicketEvents());
     fetchTicketEvents().then((data)=>{
+      
+      setTimeout(()=>{
+        removeLoader();
+      },200);
       addEvents(data);
     });
 
@@ -121,8 +129,8 @@ async function fetchTicketEvents()
 async function fetchOders()
 {
   const response= await fetch('http://localhost:9090/orders');
-  const data= await response.json();
-  return data;
+  const orders= await response.json();
+  return orders;
 }
 
 const addEvents=(events) =>{
@@ -146,8 +154,24 @@ function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
 
+  const purchasesDiv = document.querySelector('.purchases');
+  if (purchasesDiv) {
+    fetchOders().then((orders) => {
+      setTimeout(() => {
+        removeLoader();
+      }, 800);
+      orders.forEach((order) => {
+        const newOrder = createOrderElement(order);
+        purchasesDiv.appendChild(newOrder);
+      });
+    })
+  }
   
-}
+
+ }
+
+  
+
 
 // Render content based on URL
 function renderContent(url) {

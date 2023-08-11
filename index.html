@@ -6,13 +6,22 @@
 		<link rel="stylesheet" href="./src/styles.css" />
 		<link rel="stylesheet" href="./style.css" />
 		<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&amp;display=swap" rel="stylesheet">
+		<link
+		rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+		integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+		crossorigin="anonymous"
+		referrerpolicy="no-referrer"
+	    />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+
 		<title>Ticket Management</title>
 </head>
 <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
 
-    /* Stilul pentru linia de delimare */
+    /* <i class="fa-regular fa-circle-dot fa-flip" style="color: #000000;"></i> */
     header#page-header {
       border-bottom: 1px solid #ccc; /* Culoarea și grosimea bordurii */
     }
@@ -74,8 +83,16 @@
 				</ul>
 			</div>
 		</header>
+		<div
+		  id="loader"
+		  class="opacity-100 fixed top-2/4 left-1/2 -translate-x-1/2 -translate-y-1/2"
+		  >
+		  <i class="fa-solid fa-circle-dot fa-flip fa-2xl" style="color: #000000;"></i>
+		</div>
 		<main class="main-content-component">
 		</main>
 		<script type="module" src="./main.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 	</body>
 </html>

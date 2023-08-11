@@ -4,6 +4,7 @@
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable indent */
 /* eslint-disable semi */
+import { addLoader, removeLoader } from './loader';
 import { useStyle } from './styles';
 
 const createEventElement = (eventData) => {
@@ -20,7 +21,7 @@ const createEventElement = (eventData) => {
   
     
   
-  
+    
     const { id, name, description,ticket_categoryList,endDate,startDate } = eventData;
     console.log(eventData);
     const eventDiv = document.createElement('div');
@@ -88,6 +89,8 @@ const createEventElement = (eventData) => {
     
     const ticketNumber=input.value;
     const ticketCategoryId=selectTicketCategory.value;
+    if(parseInt(ticketNumber) && parseInt(ticketNumber)<15){
+      addLoader();
     fetch('http://localhost:9090/orders',{
       method: "POST",
       headers: {
@@ -109,10 +112,19 @@ const createEventElement = (eventData) => {
     .then((data) => {
       input.value = 0;
       console.log('Post done with succes!');
+      toastr.success('Succes!');
     })
     .catch((error) => {
       console.error('error in post method:', error);
+      
+    }).finally(()=>{
+      setTimeout(()=>{
+        removeLoader();
+      },200);
     })
+  }else {
+    toastr.error('Invalid selection!Min 1 ticket, Max 15');
+  }
   }
 
 
