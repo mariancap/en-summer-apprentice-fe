@@ -1,6 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   font-family: 'Roboto', sans-serif;
-  
+  /* display: flex; */
+  justify-content: center; 
+  height: 100vh;
+  align-items: center;
+  background: whitesmoke;
+}
+
+*{
+  margin:0px;
+  padding: 0px;
+  font-family: sans-serif;
+}
+
+img{
+  height: 350px;
+  width: 350px;
+  border-radius: 3px;
+}
+
+h1{
+  margin: 10px;
+  font-size: 40px;
+
+}
+
+p{
+  margin: 20px;
+  font-size: 20px;
+  visibility: hidden;
+  opacity: 0;
+}
+
+fieldset{
+  visibility: hidden;
+}
+
+.card-lookup{
+  font-weight: bold;
+  visibility: hidden;
+}
+
+.card:hover{
+  cursor: pointer;
+}
+
+.card:hover .intro{
+  height: 300px;
+  bottom: 178px;
+  background:black;
+}
+
+.card:hover p{
+  opacity: 1;
+  visibility :visible;
+}
+
+.card:hover fieldset{
+  visibility: visible;
+  opacity: 1;
+}
+
+.card:hover img{
+  transform: scale(1.1) ;
+}
+
+.card:hover .card-lookup{
+  visibility: visible;
+  opacity: 1;
+}
+
+.intro{
+  height: 70px;
+  width: 279px;
+  padding: 6px;
+  box-sizing: border-box;
+  position:absolute;
+  bottom: 177px;  
+  background: rgb(27, 27, 27,.5);
+  color: white;
+  transition: .5s;
+}
+
+.card{
+  height: 500px;
+  margin: 50px;
+  box-shadow: 5px 5px 20px black;
+  overflow: hidden;
+}
+.container{
+  display: flex;
 }
 
 .events {
@@ -126,12 +219,10 @@ h1 {
 
 .event-image {
   width: 100%;
-  height: auto;
-  max-height: 200px;
-  object-fit: contain;
-  border-radius: 5px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0; 
 }
-
 .description {
   color: #555;
   font-size: 0.9rem;
@@ -151,4 +242,7 @@ h1 {
   z-index: 1000; /* Asigurăm că antetul este peste conținut */
 }
 
+.filter-btn{
+  background-color: #555;
+}
 

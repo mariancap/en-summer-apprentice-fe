@@ -31,15 +31,16 @@ const createEventElement = (eventData) => {
     eventDiv.classList.add('event-card'); // Add the event-card class
   
     const contentMarkup = `
-    <header>
-      <h2 class="event-title text-2xl font-bold">${name}
-      <p class="description text-gray-700">${description}</p>
-      <p class="event-date text-gray-700">${formattedStartDate} - ${formattedEndDate} </p>
-  </header>
-  <div class="content">
-    <img src="${imgMap[id]}" alt="${name}" class="event-image custom-image-size rounded object-cover mb-4">
-    
-    <fieldset>
+    <div class="container">
+	<div class="card">
+		<img src="${imgMap[id]}" alt="${name}" class="event-image">
+		<div class="intro">
+			<h1>${name}</h1>
+      <span class="card-lookup">${formattedStartDate}-${formattedEndDate}</span>
+			<p>${description}</p>
+      
+      
+      <fieldset>
     <legend>Select Ticket Type:</legend>
   
     <div>
@@ -57,9 +58,11 @@ const createEventElement = (eventData) => {
     }
   
     </fieldset>
-    <label>Number of tickets</label>
-    
-  </div>
+      
+		</div>
+
+	</div>
+</div>
   `;
     eventDiv.innerHTML = contentMarkup;
     const selectTicketCategory = eventDiv.querySelector(`input[name="ticketcategory_${id}"]:checked`);
@@ -91,7 +94,7 @@ const createEventElement = (eventData) => {
     const ticketCategoryId=selectTicketCategory.value;
     if(parseInt(ticketNumber) && parseInt(ticketNumber)<15){
       addLoader();
-    fetch('http://localhost:9090/orders',{
+    fetch('http://localhost:8080/orders',{
       method: "POST",
       headers: {
         "Content-Type": 'application/json',

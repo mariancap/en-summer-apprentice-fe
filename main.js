@@ -1,8 +1,9 @@
 
 import {addLoader,removeLoader} from './src/components/loader';
-import { createEvent } from './src/components/createEventOrder.js';
+import { createEvent } from './src/components/createEvent.js';
 import { createOrderElement } from './src/components/createOrderItem.js';
-
+import { createCheckboxesForEvents } from './src/components/createCheckboxesForEvents';
+import { fetchDelete,fetchOders,fetchTicketEvents } from './src/components/apiCalls';
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -12,22 +13,49 @@ function navigateTo(url) {
 function getHomePageTemplate() {
   return `
   
-    <div id="content">
-    
-      <div class="events flex items-center justify-center flex-wrap ">
+  <div id="content" class="hidden">
+
+    <div class="flex flex-col items-center">
+      <div class="w-80">
+        <h1>Explore Events</h1>
+        <div class="filters flex flex-col" id="displayFilters">
+          <input type="text" id="filter-name" placeholder="Filter by Name" class="searchBar px-4 mt-4 mb-4 py-2 border" />
+          <button id="filter-button" class="filter-btn px-4 py-2 text-white rounded-lg">Filter</button>
+        </div>
       </div>
     </div>
-  
-  `;
+    
+    <div class="events flex items-center justify-center flex-wrap "></div>
+    <div class="cart"></div>
+  </div>
+`;
 }
 
 function getOrdersPageTemplate() {
   return `
-    <div id="content">
+    <div id="content" class="hidden">
     <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
     <div class="purchases ml-6 mr-6">
-        <div class="bg-white px-4 py-3 gap-x-4 flex font-bold></div>
+        <div class="bg-white px-4 py-3 gap-x-4 flex font-bold>
+        <button class="hidden md:flex text-justify" id="sorting-button-1">
+        <span>Event</span>
+        <i class="fa-solid fa-arrow-up-wide-short text-xl" id="sorting-icon-1"></i>
+        </button>
+        <span class="flex-1">Order id</span>
+        <span class="flex-1 text-left">Number of tickets</span>
+        <span class="flex-1 text-left">Ticket Category</span>
+        <span class="flex-1 hidden md:flex">Date</span>
+        <button class="hidden md:flex text-justify" id="sorting-button-2">
+          <span class="flex-1 text-justify">Price</span>
+          <i class="fa-solid fa-arrow-up-wide-short text-xl" id="sorting-icon-2"></i>
+          </button>
+        <span class="flex-1"></span>
+        
+
+        </div>
+        </div id="purchases-content">
       </div>  
+    </div>
     </div>
   `;
 }
@@ -41,6 +69,7 @@ function setupNavigationEvents() {
       navigateTo(href);
     });
   });
+  
 }
 
 function setupMobileMenuEvent() {
@@ -66,44 +95,27 @@ function setupInitialPage() {
   renderContent(initialUrl);
 }
 
-function renderHomePage() {
+async function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
 
   
-
-  const eventData = {
-    id: 1,
-    description: 'Sample event description.',
-    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-    name: 'Sample Event',
-    ticketCategories: [
-      { id: 1, description: 'General Admission' },
-      { id: 2, description: 'VIP' },
-    ],
-
-    
-  };
-
-  
-  
-  // Create the event card element
   const eventCard = document.createElement('div');
   eventCard.classList.add('event-card'); 
-  // Create the event content markup
   const contentMarkup = `
     <header>
-      <h2 class="event-title text-2xl font-bold">${eventData.name}</h2>
+      <h2 class="event-title text-2xl font-bold"></h2>
     </header>
     <div class="content">
-      < alt="${eventData.name}" class="event-image w-full height-200 rounded object-cover mb-4">
-      <p class="description text-gray-700">${eventData.description}</p>
+      <  class="event-image w-full height-200 rounded object-cover mb-4">
+      <p class="description text-gray-700"></p>
     </div>
   `;
 
   eventCard.innerHTML = contentMarkup;
   const eventsContainer = document.querySelector('.events');
-  // Append the event card to the events container
+  const filterButton=document.querySelector('#filter-button');
+  const searchBar=document.querySelector('.searchBar')
   eventsContainer.appendChild(eventCard);
 
   console.log('function',fetchTicketEvents());
@@ -112,28 +124,26 @@ function renderHomePage() {
       setTimeout(()=>{
         removeLoader();
       },200);
+      filterButton.addEventListener('click',()=>{
+        createCheckboxesForEvents(data);
+      })
+      if(searchBar){
+        setupFilterEvents(data);
+      }
       addEvents(data);
+      
     });
 
+    
+
+    
+    
   
 }
 
-async function fetchTicketEvents()
-{
-  const response= await fetch('http://localhost:9090/getAll');
-  const data= await response.json();
-  return data;
-}
 
 
-async function fetchOders()
-{
-  const response= await fetch('http://localhost:9090/orders');
-  const orders= await response.json();
-  return orders;
-}
-
-const addEvents=(events) =>{
+export const addEvents=(events) =>{
   const eventsDiv=document.querySelector('.events');
   eventsDiv.innerHTML='No invents';
   if(events.length)
@@ -146,34 +156,65 @@ const addEvents=(events) =>{
 };
 
 
+function liveSearch(events){
+  const filterInput=document.querySelector('#filter-name');
+  if(filterInput)
+  {
+    const searchValue=filterInput.value;
+    if(searchValue!==undefined)
+    {
+      const filterEvents=events.filter((event)=>
+        event.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      addEvents(filterEvents);
+    }
+  }
+}
 
 
+function setupFilterEvents(data){
+const nameFilterInput=document.querySelector('#filter-name');
+nameFilterInput.addEventListener('keyup',()=>{
+  
+  if(nameFilterInput)
+  {
+    setTimeout(() => {
+      liveSearch(data); 
+    }, 500);
+  }
+  
+})
+
+}
 
 
-function renderOrdersPage(categories) {
+function renderOrdersPage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
 
   const purchasesDiv = document.querySelector('.purchases');
+  const purchasesContent=document.getElementById('purchases-content');
+  addLoader();
   if (purchasesDiv) {
     fetchOders().then((orders) => {
+      
       setTimeout(() => {
         removeLoader();
-      }, 800);
+      }, 500);
       orders.forEach((order) => {
         const newOrder = createOrderElement(order);
         purchasesDiv.appendChild(newOrder);
       });
-    })
+      
+      
   }
+)
   
-
- }
+    
+  }
+}
 
   
-
-
-// Render content based on URL
 function renderContent(url) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = '';
@@ -187,9 +228,6 @@ function renderContent(url) {
 
 
 
-
-
-// Call the setup functions
 setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
