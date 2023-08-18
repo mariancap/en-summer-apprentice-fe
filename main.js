@@ -1,10 +1,12 @@
 
+
 import {addLoader,removeLoader} from './src/components/loader';
 import { createEvent } from './src/components/createEvent.js';
-import { createOrderElement } from './src/components/createOrderItem.js';
 import { createCheckboxesForEvents } from './src/components/createCheckboxesForEvents';
-import { fetchDelete,fetchOders,fetchTicketEvents } from './src/components/apiCalls';
-// Navigate to a specific URL
+import { fetchOders,fetchTicketEvents,fetchTicketCategory } from './src/components/apiCalls';
+import { createOrderElement } from './src/components/CreateOrders';
+
+
 function navigateTo(url) {
   history.pushState(null, null, url);
   renderContent(url);
@@ -188,7 +190,7 @@ nameFilterInput.addEventListener('keyup',()=>{
 }
 
 
-function renderOrdersPage() {
+function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
 
@@ -202,13 +204,16 @@ function renderOrdersPage() {
         removeLoader();
       }, 500);
       orders.forEach((order) => {
-        const newOrder = createOrderElement(order);
+        const newOrder = createOrderElement(categories,order);
         purchasesDiv.appendChild(newOrder);
       });
       
       
+      
   }
 )
+
+
   
     
   }
@@ -222,7 +227,11 @@ function renderContent(url) {
   if (url === '/') {
     renderHomePage();
   } else if (url === '/orders') {
-    renderOrdersPage()
+    fetchTicketCategory().then((categories)=>{
+      renderOrdersPage(categories);
+    }).catch((error)=>{
+      console.error("Error fethcing ticket categories:",error);
+    })
   }
 }
 

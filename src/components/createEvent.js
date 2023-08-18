@@ -7,7 +7,7 @@
 import { addLoader, removeLoader } from './loader';
 import { useStyle } from './styles';
 
-const createEventElement = (eventData) => {
+export const createEventElement = (eventData) => {
 
     const addToCartBtnClasses = useStyle('addToCartBtn');
     const inputClasses = useStyle('inputTicket');
@@ -87,11 +87,12 @@ const createEventElement = (eventData) => {
     return eventDiv;
   }
   
-  const handleAddToCart = (id, selectTicketCategory, input) => {
-    
-    
-    const ticketNumber=input.value;
-    const ticketCategoryId=selectTicketCategory.value;
+  const handleAddToCart = (id, input) => {
+    const eventDiv = input.closest('.event-card');
+  
+  const selectedOption = eventDiv.querySelector(`input[name="ticketcategory_${id}"]:checked`);
+  const ticketNumber = input.value;
+  const ticketCategoryId = selectedOption.value;
     if(parseInt(ticketNumber) && parseInt(ticketNumber)<15){
       addLoader();
     fetch('http://localhost:8080/orders',{
