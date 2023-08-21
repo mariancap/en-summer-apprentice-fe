@@ -22,7 +22,7 @@ export const createEventElement = (eventData) => {
     
   
     
-    const { id, name, description,ticket_categoryList,endDate,startDate } = eventData;
+    const { id, name, description,ticket_categoryList,endDate,startDate,venue } = eventData;
     console.log(eventData);
     const eventDiv = document.createElement('div');
     const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
@@ -37,6 +37,8 @@ export const createEventElement = (eventData) => {
 		<div class="intro">
 			<h1>${name}</h1>
       <span class="card-lookup">${formattedStartDate}-${formattedEndDate}</span>
+      <br>
+      <span class="card-lookup">${venue.name}</span>
 			<p>${description}</p>
       
       

@@ -38,27 +38,38 @@ function getOrdersPageTemplate() {
     <div id="content" class="hidden">
     <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
     <div class="purchases ml-6 mr-6">
-        <div class="bg-white px-4 py-3 gap-x-4 flex font-bold>
-        <button class="hidden md:flex text-justify" id="sorting-button-1">
-        <span>Event</span>
-        <i class="fa-solid fa-arrow-up-wide-short text-xl" id="sorting-icon-1"></i>
-        </button>
-        <span class="flex-1">Order id</span>
-        <span class="flex-1 text-left">Number of tickets</span>
-        <span class="flex-1 text-left">Ticket Category</span>
-        <span class="flex-1 hidden md:flex">Date</span>
-        <button class="hidden md:flex text-justify" id="sorting-button-2">
-          <span class="flex-1 text-justify">Price</span>
-          <i class="fa-solid fa-arrow-up-wide-short text-xl" id="sorting-icon-2"></i>
-          </button>
-        <span class="flex-1"></span>
         
+    <table>
+    <tr>
+      <th>Product </th>
+      <th>Quantity</th>
+      <th>Ticket Type</th>
+      <th>Ordered At </th>
+      <th>Subtotal</th>
+      <th></th>
+      
+      
+    </tr>
+    
+  </table>
+  
+  </div>
 
         </div>
         </div id="purchases-content">
       </div>  
     </div>
     </div>
+
+    <div class="total-price">
+    <table>
+      <tr>
+        <td>Total</td>
+        <td>$200.00</td>
+      </tr>
+    </table>
+  </div>
+    
   `;
 }
 
@@ -232,6 +243,8 @@ function renderContent(url) {
     }).catch((error)=>{
       console.error("Error fethcing ticket categories:",error);
     })
+
+  
   }
 }
 
